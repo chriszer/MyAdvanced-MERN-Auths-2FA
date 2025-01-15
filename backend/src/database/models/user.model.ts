@@ -32,6 +32,10 @@ const userSchema = new Schema<UserDocument>(
       required: true,
     },
     password: { type: String, required: true },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
     userPreference: {
       type: userPreferencesSchema,
       default: {},
