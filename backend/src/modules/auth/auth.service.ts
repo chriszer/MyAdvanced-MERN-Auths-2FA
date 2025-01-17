@@ -16,7 +16,7 @@ export class AuthService {
 
     if (existingUser) {
       throw new BadRequestException(
-        "User already exists",
+        "User already exists with this mail",
         ErrorCode.AUTH_EMAIL_ALREADY_EXISTS
       );
     }
@@ -38,7 +38,7 @@ export class AuthService {
     //Sending verification email link
 
     return {
-        user:newUser,
-    }
+      user: newUser,
+    };
   }
 }

@@ -14,7 +14,7 @@ export interface UserDocument extends Document {
   isEmailVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
-  userPreference: UserPreferences;
+  userPreferences: UserPreferences;
   comparePassword(value: string): Promise<boolean>;
 }
 const userPreferencesSchema = new Schema<UserPreferences>({
@@ -36,7 +36,7 @@ const userSchema = new Schema<UserDocument>(
       type: Boolean,
       default: false,
     },
-    userPreference: {
+    userPreferences: {
       type: userPreferencesSchema,
       default: {},
     },
