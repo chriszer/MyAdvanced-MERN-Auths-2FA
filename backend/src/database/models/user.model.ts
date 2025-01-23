@@ -4,7 +4,7 @@ import { compareValue, hashValue } from "../../common/utils/bcrypt";
 interface UserPreferences {
   enable2FA: boolean;
   emailNotification: boolean;
-  twoFactorSecret?: boolean;
+  twoFactorSecret?: string;
 }
 
 export interface UserDocument extends Document {
@@ -20,18 +20,24 @@ export interface UserDocument extends Document {
 const userPreferencesSchema = new Schema<UserPreferences>({
   enable2FA: { type: Boolean, default: false },
   emailNotification: { type: Boolean, default: true },
-  twoFactorSecret: { type: String, default: false },
+  twoFactorSecret: { type: String, required: false },
 });
 
 const userSchema = new Schema<UserDocument>(
   {
-    name: { type: String, required: true },
+    name: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       unique: true,
       required: true,
     },
-    password: { type: String, required: true },
+    password: {
+      type: String,
+      required: true,
+    },
     isEmailVerified: {
       type: Boolean,
       default: false,
@@ -46,7 +52,6 @@ const userSchema = new Schema<UserDocument>(
     toJSON: {},
   }
 );
-
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
     this.password = await hashValue(this.password);
@@ -55,7 +60,7 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.methods.comparePassword = async function (value: string) {
-  return await compareValue(value, this.password);
+  return compareValue(value, this.password);
 };
 
 userSchema.set("toJSON", {
