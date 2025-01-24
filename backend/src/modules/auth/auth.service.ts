@@ -4,6 +4,7 @@ import { VerificationEnum } from "../../common/enums/verification-code.enum";
 import { LoginDto, RegisterDto } from "../../common/interface/auth.interface";
 import {
   BadRequestException,
+  NotFoundException,
   UnauthorizedException,
 } from "../../common/utils/catch-errors";
 import {
@@ -153,5 +154,36 @@ export class AuthService {
       accessToken,
       newRefreshToken,
     };
+  }
+
+  public async verifyEmail(code: string) {
+    const validCode = await VerificationCodeModel.findOne({
+      code: code,
+      type: VerificationEnum.EMAIL_VERIFICATION,
+      expiresAt: { $gt: new Date() },
+    });
+
+    if (!validCode) {
+      throw new BadRequestException("Invalid or expired verification");
+    }
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      validCode.userId,
+      {
+        isEmailVerified: true,
+      },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      throw new BadRequestException(
+        "Unable to verify email address",
+        ErrorCode.VALIDATION_ERROR
+      );
+    }
+
+    await validCode.deleteOne();
+
+    return { user: updatedUser };
   }
 }
