@@ -73,6 +73,14 @@ export class AuthService {
       );
     }
 
+    const isPasswordValid = await user.comparePassword(password);
+    if (!isPasswordValid) {
+      throw new BadRequestException(
+        "Invalid email or password provided",
+        ErrorCode.AUTH_USER_NOT_FOUND
+      );
+    }
+
     //Check if the user enable 2fa return user = null
     const session = await SessionModel.create({
       userId: user._id,
@@ -91,14 +99,14 @@ export class AuthService {
       refreshTokenSignOptions
     );
 
-    jwt.sign(
-      { userId: user._id, sessionId: session._id },
-      config.JWT.REFRESH_SECRET,
-      {
-        audience: ["user"],
-        expiresIn: config.JWT.REFRESH_EXPIRES_IN,
-      }
-    );
+    // jwt.sign(
+    //   { userId: user._id, sessionId: session._id },
+    //   config.JWT.REFRESH_SECRET,
+    //   {
+    //     audience: ["user"],
+    //     expiresIn: config.JWT.REFRESH_EXPIRES_IN,
+    //   }
+    // );
 
     return {
       user,
@@ -164,7 +172,7 @@ export class AuthService {
     });
 
     if (!validCode) {
-      throw new BadRequestException("Invalid or expired verification");
+      throw new BadRequestException("Invalid or expired verification code");
     }
 
     const updatedUser = await UserModel.findByIdAndUpdate(
@@ -183,6 +191,10 @@ export class AuthService {
     }
 
     await validCode.deleteOne();
+
+    return {
+      user: updatedUser,
+    };
 
     return { user: updatedUser };
   }

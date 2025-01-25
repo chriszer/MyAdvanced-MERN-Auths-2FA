@@ -14,11 +14,7 @@ export class NotFoundException extends AppError {
 
 export class BadRequestException extends AppError {
   constructor(message = "Bad Request", errorCode?: ErrorCode) {
-    super(
-      message,
-      HTTPSTATUS.BAD_REQUEST,
-      errorCode || ErrorCode.AUTH_USER_NOT_FOUND
-    );
+    super(message, HTTPSTATUS.BAD_REQUEST, errorCode);
   }
 }
 export class UnauthorizedException extends AppError {

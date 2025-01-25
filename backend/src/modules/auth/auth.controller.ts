@@ -92,6 +92,7 @@ export class AuthController {
     async (req: Request, res: Response): Promise<any> => {
       const { code } = verificationEmailSchema.parse(req.body);
       await this.authService.verifyEmail(code);
+
       return res.status(HTTPSTATUS.OK).json({
         message: "Email sucessfully verified",
       });
