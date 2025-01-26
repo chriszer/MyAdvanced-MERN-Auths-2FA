@@ -27,7 +27,6 @@ export class AuthController {
         ...req.body,
       });
       const { user } = await this.authService.register(body);
-      this.authService.register(body);
 
       return res.status(HTTPSTATUS.CREATED).json({
         message: "User registered successfully",
