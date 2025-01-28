@@ -119,15 +119,6 @@ export class AuthService {
       refreshTokenSignOptions
     );
 
-    // jwt.sign(
-    //   { userId: user._id, sessionId: session._id },
-    //   config.JWT.REFRESH_SECRET,
-    //   {
-    //     audience: ["user"],
-    //     expiresIn: config.JWT.REFRESH_EXPIRES_IN,
-    //   }
-    // );
-
     return {
       user,
       accessToken,
@@ -299,5 +290,9 @@ export class AuthService {
     return {
       user: updatedUser,
     };
+  }
+
+  public async logout(sessionId: string) {
+    return await SessionModel.findByIdAndDelete(sessionId);
   }
 }

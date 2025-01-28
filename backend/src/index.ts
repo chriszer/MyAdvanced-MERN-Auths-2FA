@@ -7,8 +7,7 @@ import connectDatabase from "./database/database";
 import { errorHandler } from "./middlewares/errorHandler";
 import { HTTPSTATUS } from "./config/http.config";
 import { asyncHandler } from "./middlewares/asyncHandler";
-import { BadRequestException } from "./common/utils/catch-errors";
-import { ErrorCode } from "./common/enums/error-code.enum";
+import passport from "./middlewares/passport";
 import authRoutes from "./modules/auth/auth.routes";
 
 const app = express();
@@ -24,6 +23,7 @@ app.use(
 );
 
 app.use(cookieParser());
+app.use(passport.initialize());
 
 app.get(
   "/",
