@@ -2,7 +2,7 @@ import { add } from "date-fns";
 
 export const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 
-export const thiryDaysFromNow = (): Date =>
+export const thirtyDaysFromNow = (): Date =>
   new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
 export const fortyFiveMinutesFromNow = (): Date => {
@@ -10,7 +10,6 @@ export const fortyFiveMinutesFromNow = (): Date => {
   now.setMinutes(now.getMinutes() + 45);
   return now;
 };
-
 export const tenMinutesAgo = (): Date => new Date(Date.now() - 10 * 60 * 1000);
 
 export const threeMinutesAgo = (): Date => new Date(Date.now() - 3 * 60 * 1000);
