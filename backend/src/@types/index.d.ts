@@ -1,3 +1,4 @@
+import { SessionDocument } from "../database/models/session.model";
 import { UserDocument } from "../database/models/user.model";
 import { Request } from "express";
 
