@@ -1,5 +1,6 @@
 import { Request } from "express";
 import speakeasy from "speakeasy";
+import qrcode from "qrcode";
 import { UnauthorizedException } from "../../common/utils/catch-errors";
 
 export class MfaService {
@@ -22,5 +23,19 @@ export class MfaService {
       user.userPreferences.twoFactorSecret = secretKey;
       await user.save();
     }
+
+    const url = speakeasy.otpauthURL({
+      secret: secretKey,
+      label: `${user.email}`,
+      issuer: "squeezy.com",
+      encoding: "base32",
+    });
+    const qrImageUrl = await qrcode.toDataURL(url);
+
+    return {
+      message: "Scan the QR code or use the setup key.",
+      secret: secretKey,
+      qrImageUrl,
+    };
   }
 }
