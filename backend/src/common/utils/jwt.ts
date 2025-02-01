@@ -38,6 +38,10 @@ export const signJwtToken = (
   return jwt.sign(payload, secret, { ...defaults, ...opts });
 };
 
+// const { payload } = verifyJwtToken<RefreshTPayload>(refreshToken, {
+//   secret: refreshTokenSignOptions.secret,
+// });
+
 export const verifyJwtToken = <TPayload extends object = AccessTPayload>(
   token: string,
   options?: VerifyOptions & { secret: string }

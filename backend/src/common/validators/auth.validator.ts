@@ -21,7 +21,7 @@ export const loginSchema = z.object({
   email: emailSchema,
   password: passwordSchema,
   userAgent: z.string().optional(),
-});
+}); 
 
 export const verificationEmailSchema = z.object({
   code: verificationCodeSchema,
