@@ -55,7 +55,7 @@ export class AuthController {
       if (mfaRequired) {
         return res.status(HTTPSTATUS.OK).json({
           message: "Verify MFA authentication",
-          mfaRequired: true,
+          mfaRequired,
           user,
         });
       }
