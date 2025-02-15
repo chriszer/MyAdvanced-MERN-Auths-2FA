@@ -5,8 +5,14 @@ const Logo = (props: { url?: string; size?: string; fontSize?: string }) => {
   const { url = "/", size = "40px", fontSize = "24px" } = props;
   return (
     <div className="flex item-center justify-center sm:justify-start">
-      <Link href={url} className="">
-        <span className="font-bold tet-gray-50"></span>
+      <Link
+        href={url}
+        className="rounded-lg flex items-center border-2 dark:border-gray-200 justify-center bg-gradient-to-br from-blue-500 to-primary to-90%"
+        style={{ width: size, height: size }}
+      >
+        <span className="" style={{ fontSize: fontSize }}>
+          S
+        </span>
       </Link>
     </div>
   );
