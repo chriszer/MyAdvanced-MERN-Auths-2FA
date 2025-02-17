@@ -1,7 +1,21 @@
-import React from "react";
-import SessionItem from "./SessionItem";
+import React from 'react'
+import SessionItem from './SessionItem'
+import { useQuery } from '@tanstack/react-query'
+import { sessionsQueryFn } from '@/lib/api'
 
 const Sessions = () => {
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['sessions'],
+    queryFn: sessionsQueryFn,
+    staleTime: Infinity,
+  })
+
+  const sessions = data?.sessions || []
+
+  const currentSession = sessions?.find((session) => session.isCurrent)
+  const otherSessions = sessions?.filter(
+    (session) => session.isCurrent !== true
+  )
   return (
     <div className="via-root to-root rounded-xl bg-gradient-to-r p-0.5">
       <div className="rounded-[10px] p-6">
@@ -46,7 +60,7 @@ const Sessions = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Sessions;
+export default Sessions

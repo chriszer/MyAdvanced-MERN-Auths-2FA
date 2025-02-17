@@ -1,14 +1,14 @@
-"use client";
-import React from "react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { REGEXP_ONLY_DIGITS } from "input-otp";
-import { zodResolver } from "@hookform/resolvers/zod";
+'use client'
+import React from 'react'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { REGEXP_ONLY_DIGITS } from 'input-otp'
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from "@/components/ui/input-otp";
+} from '@/components/ui/input-otp'
 import {
   Form,
   FormControl,
@@ -16,53 +16,64 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form'
 
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import Logo from "@/components/logo";
-import { useRouter, useSearchParams } from "next/navigation";
-import { verifyMFALoginMutationFn } from "@/lib/api";
-import { useMutation } from "@tanstack/react-query";
+import { Button } from '@/components/ui/button'
+import { ArrowRight, Loader } from 'lucide-react'
+import Logo from '@/components/logo'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { verifyMFALoginMutationFn } from '@/lib/api'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from '@/hooks/use-toast'
 
 const VerifyMfa = () => {
-  const router = useRouter();
-  const params = useSearchParams();
-  const email = params.get("email");
+  const router = useRouter()
+  const params = useSearchParams()
+  const email = params.get('email')
 
   const { mutate, isPending } = useMutation({
     mutationFn: verifyMFALoginMutationFn,
-  });
+  })
 
   const FormSchema = z.object({
     pin: z.string().min(6, {
-      message: "Your one-time password must be 6 characters.",
+      message: 'Your one-time password must be 6 characters.',
     }),
-  });
+  })
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      pin: "",
+      pin: '',
     },
-  });
+  })
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
     if (!email) {
-      router.replace("/");
-      return;
+      router.replace('/')
+      return
     }
     const data = {
       code: values.pin,
       email: email,
-    };
+    }
     mutate(data, {
-      onSuccess: () => {
-        router.replace("/home");
+      onSuccess: (response) => {
+        router.replace('/home')
+        toast({
+          title: 'Success',
+          description: response?.data?.message,
+        })
       },
-      onError: (error) => {},
-    });
-  };
+      onError: (error) => {
+        toast({
+          title: 'Error',
+          description: 'error.message',
+          variant: 'destructive',
+        })
+      },
+    })
+  }
 
   return (
     <main className="w-full min-h-[590px] h-full max-w-full flex items-center justify-center ">
@@ -99,7 +110,7 @@ const VerifyMfa = () => {
                         maxLength={6}
                         pattern={REGEXP_ONLY_DIGITS}
                         {...field}
-                        style={{ justifyContent: "center" }}
+                        style={{ justifyContent: 'center' }}
                       >
                         <InputOTPGroup>
                           <InputOTPSlot
@@ -137,7 +148,8 @@ const VerifyMfa = () => {
                   </FormItem>
                 )}
               />
-              <Button className="w-full h-[40px] mt-2">
+              <Button disabled={isPending} className="w-full h-[40px] mt-2">
+                {isPending && <Loader className="animate-spin" />}
                 Continue
                 <ArrowRight />
               </Button>
@@ -150,7 +162,7 @@ const VerifyMfa = () => {
         </Button>
       </div>
     </main>
-  );
-};
+  )
+}
 
-export default VerifyMfa;
+export default VerifyMfa
