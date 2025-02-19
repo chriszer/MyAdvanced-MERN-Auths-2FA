@@ -65,6 +65,8 @@ export const mfaSetupQueryFn = async () => {
 export const verifyMFAMutationFn = async (data: verifyMFAType) =>
   await API.post('/mfa/verify', data)
 
+export const logoutMutationFn = async () => await API.post(`/auth/logout`)
+
 export const revokeMFAMutation = async () => await API.put('/mfa/revoke', {})
 
 export const getUserSessionQueryFn = async () => await API.get('/session/')
@@ -73,3 +75,6 @@ export const sessionsQueryFn = async () => {
   const response = await API.get<SessionResponseType>('/session/all')
   return response.data
 }
+
+export const sessionDelMutationFn = async (id: string) =>
+  await API.delete(`/session/${id}`)

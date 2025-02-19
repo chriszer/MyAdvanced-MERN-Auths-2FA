@@ -1,10 +1,10 @@
-"use client";
-import React, { useCallback, useState } from "react";
-import { z } from "zod";
-import { Check, Copy, Loader } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { REGEXP_ONLY_DIGITS } from "input-otp";
-import { zodResolver } from "@hookform/resolvers/zod";
+'use client'
+import React, { useCallback, useState } from 'react'
+import { z } from 'zod'
+import { Check, Copy, Loader } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { REGEXP_ONLY_DIGITS } from 'input-otp'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 import {
   Dialog,
@@ -12,12 +12,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog'
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from "@/components/ui/input-otp";
+} from '@/components/ui/input-otp'
 import {
   Form,
   FormControl,
@@ -25,81 +25,81 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { useAuthContext } from "@/context/auth-provider";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { mfaSetupQueryFn, mfaType, verifyMFAMutationFn } from "@/lib/api";
-import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "@/hooks/use-toast";
-import RevokeMfa from "../_common/RevokeMfa";
+} from '@/components/ui/form'
+import { Button } from '@/components/ui/button'
+import { useAuthContext } from '@/context/auth-provider'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { mfaSetupQueryFn, mfaType, verifyMFAMutationFn } from '@/lib/api'
+import { Skeleton } from '@/components/ui/skeleton'
+import { toast } from '@/hooks/use-toast'
+import RevokeMfa from './_common/RevokeMfa'
 
 const EnableMfa = () => {
-  const queryClient = useQueryClient();
-  const { user, refetch } = useAuthContext();
-  const [showKey, setShowKey] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const queryClient = useQueryClient()
+  const { user, refetch } = useAuthContext()
+  const [showKey, setShowKey] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   const { data, isLoading } = useQuery({
-    queryKey: ["mfa-setup"],
+    queryKey: ['mfa-setup'],
     queryFn: mfaSetupQueryFn,
     enabled: isOpen,
     staleTime: Infinity,
-  });
+  })
 
   const { mutate, isPending } = useMutation({
     mutationFn: verifyMFAMutationFn,
-  });
+  })
 
-  const mfaData = data ?? ({} as mfaType);
-  console.log(mfaData);
+  const mfaData = data ?? ({} as mfaType)
+  console.log(mfaData)
 
   const FormSchema = z.object({
     pin: z.string().min(6, {
-      message: "Your one-time password must be 6 characters.",
+      message: 'Your one-time password must be 6 characters.',
     }),
-  });
+  })
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      pin: "",
+      pin: '',
     },
-  });
+  })
 
   function onSubmit(values: z.infer<typeof FormSchema>) {
     const data = {
       code: values.pin,
       secretKey: mfaData.secret,
-    };
+    }
     mutate(data, {
       onSuccess: (response: any) => {
         queryClient.invalidateQueries({
-          queryKey: ["authUser"],
-        });
-        refetch();
-        setIsOpen(false);
+          queryKey: ['authUser'],
+        })
+        refetch()
+        setIsOpen(false)
         toast({
-          title: "Success",
+          title: 'Success',
           description: response.message,
-        });
+        })
       },
       onError: (error) => {
         toast({
-          title: "Error",
+          title: 'Error',
           description: error.message,
-          variant: "destructive",
-        });
+          variant: 'destructive',
+        })
       },
-    });
+    })
   }
 
   const onCopy = useCallback((value: string) => {
-    navigator.clipboard.writeText(value);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1000);
-  }, []);
+    navigator.clipboard.writeText(value)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1000)
+  }, [])
 
   return (
     <div className="via-root to-root rounded-xl bg-gradient-to-r p-0.5">
@@ -140,7 +140,7 @@ const EnableMfa = () => {
                   Scan the QR code
                 </p>
                 <span className="text-sm text-[#0007149f] dark:text-inherit font-normal">
-                  Use an app like{" "}
+                  Use an app like{' '}
                   <a
                     className="!text-primary underline decoration-primary decoration-1 underline-offset-2 transition duration-200 ease-in-out hover:decoration-blue-11 dark:text-current dark:decoration-slate-9 dark:hover:decoration-current "
                     rel="noopener noreferrer"
@@ -148,8 +148,8 @@ const EnableMfa = () => {
                     href="https://support.1password.com/one-time-passwords/"
                   >
                     1Password
-                  </a>{" "}
-                  or{" "}
+                  </a>{' '}
+                  or{' '}
                   <a
                     className="!text-primary underline decoration-primary decoration-1 underline-offset-2 transition duration-200 ease-in-out hover:decoration-blue-11 dark:text-current dark:decoration-slate-9 dark:hover:decoration-current "
                     rel="noopener noreferrer"
@@ -157,7 +157,7 @@ const EnableMfa = () => {
                     href="https://safety.google/authentication/"
                   >
                     Google Authenticator
-                  </a>{" "}
+                  </a>{' '}
                   to scan the QR code below.
                 </span>
               </div>
@@ -234,7 +234,7 @@ const EnableMfa = () => {
                               maxLength={6}
                               pattern={REGEXP_ONLY_DIGITS}
                               {...field}
-                              style={{ justifyContent: "center" }}
+                              style={{ justifyContent: 'center' }}
                             >
                               <InputOTPGroup>
                                 <InputOTPSlot
@@ -284,7 +284,7 @@ const EnableMfa = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default EnableMfa;
+export default EnableMfa

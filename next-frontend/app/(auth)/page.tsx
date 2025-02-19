@@ -1,10 +1,10 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { ArrowRight, Loader } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
-import { z } from "zod";
-import Link from "next/link";
+'use client'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { ArrowRight, Loader } from 'lucide-react'
+import { useMutation } from '@tanstack/react-query'
+import { z } from 'zod'
+import Link from 'next/link'
 import {
   Form,
   FormControl,
@@ -12,55 +12,55 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import Logo from "@/components/logo";
-import { loginMutationFn } from "@/lib/api";
-import { useRouter } from "next/navigation";
-import { toast } from "@/hooks/use-toast";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import Logo from '@/components/logo'
+import { loginMutationFn } from '@/lib/api'
+import { useRouter } from 'next/navigation'
+import { toast } from '@/hooks/use-toast'
 
 export default function Login() {
-  const router = useRouter();
+  const router = useRouter()
   const { mutate, isPending } = useMutation({
     mutationFn: loginMutationFn,
-  });
+  })
 
   const formSchema = z.object({
     email: z.string().trim().email().min(1, {
-      message: "Email is required",
+      message: 'Email is required',
     }),
     password: z.string().trim().min(1, {
-      message: "Password is required",
+      message: 'Password is required',
     }),
-  });
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
-  });
+  })
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     mutate(values, {
       onSuccess: (response) => {
         if (response.data.mfaRequired) {
-          router.replace(`/verify-mfa?email=${values.email}`);
-          return;
+          router.replace(`/verify-mfa?email=${values.email}`)
+          return
         }
-        router.replace(`/home`);
+        router.replace(`/home`)
       },
       onError: (error) => {
         toast({
-          title: "Error",
+          title: 'Error',
           description: error.message,
-          variant: "destructive",
-        });
+          variant: 'destructive',
+        })
       },
-    });
-  };
+    })
+  }
 
   return (
     <main className="w-full min-h-[590px] h-auto max-w-full pt-10">
@@ -71,7 +71,7 @@ export default function Login() {
           Log in to Squeezy
         </h1>
         <p className="mb-8 text-center sm:text-left text-base dark:text-[#f1f7feb5] font-normal">
-          Don't have an account?{" "}
+          Don't have an account?{' '}
           <Link className="text-primary" href="/signup">
             Sign up
           </Link>
@@ -154,11 +154,11 @@ export default function Login() {
           Email magic link
         </Button>
         <p className="text-xs dark:text-slate- font-normal mt-7">
-          By signing in, you agree to our{" "}
+          By signing in, you agree to our{' '}
           <a className="text-primary hover:underline" href="#">
             Terms of Service
-          </a>{" "}
-          and{" "}
+          </a>{' '}
+          and{' '}
           <a className="text-primary hover:underline" href="#">
             Privacy Policy
           </a>
@@ -166,5 +166,5 @@ export default function Login() {
         </p>
       </div>
     </main>
-  );
+  )
 }
